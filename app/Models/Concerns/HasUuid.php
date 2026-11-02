@@ -39,4 +39,3 @@ trait HasUuid
         return 'uuid';
     }
 }
-

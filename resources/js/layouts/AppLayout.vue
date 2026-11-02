@@ -36,6 +36,25 @@
               Dashboard
             </router-link>
 
+            <!-- Admin Management Links -->
+            <router-link
+              v-if="authStore.isAdmin"
+              to="/admin/categories"
+              class="text-slate-600 hover:text-emerald-600 transition"
+              active-class="text-emerald-600 font-semibold"
+            >
+              Categories
+            </router-link>
+
+            <router-link
+              v-if="authStore.isAdmin"
+              to="/admin/users"
+              class="text-slate-600 hover:text-emerald-600 transition"
+              active-class="text-emerald-600 font-semibold"
+            >
+              Users
+            </router-link>
+
             <!-- Authenticated User Menu -->
             <div v-if="authStore.isAuthenticated" class="flex items-center space-x-3 pl-2 sm:pl-4 border-l border-slate-200">
               <router-link

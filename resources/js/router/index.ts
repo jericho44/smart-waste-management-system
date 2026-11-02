@@ -7,6 +7,8 @@ import DashboardView from '@/modules/dashboard/views/DashboardView.vue';
 import LoginView from '@/modules/auth/views/LoginView.vue';
 import RegisterView from '@/modules/auth/views/RegisterView.vue';
 import ProfileView from '@/modules/profile/views/ProfileView.vue';
+import CategoryListView from '@/modules/categories/views/CategoryListView.vue';
+import UserListView from '@/modules/users/views/UserListView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
 
 const routes: RouteRecordRaw[] = [
@@ -36,6 +38,26 @@ const routes: RouteRecordRaw[] = [
         meta: {
           title: 'My Profile - Smart Waste Management',
           requiresAuth: true,
+        },
+      },
+      {
+        path: 'admin/categories',
+        name: 'admin-categories',
+        component: CategoryListView,
+        meta: {
+          title: 'Categories - Smart Waste Management',
+          requiresAuth: true,
+          requiresAdmin: true,
+        },
+      },
+      {
+        path: 'admin/users',
+        name: 'admin-users',
+        component: UserListView,
+        meta: {
+          title: 'User Management - Smart Waste Management',
+          requiresAuth: true,
+          requiresAdmin: true,
         },
       },
       {
@@ -94,6 +116,10 @@ router.beforeEach(async (to, _from, next) => {
       name: 'login',
       query: { redirect: to.fullPath },
     });
+  }
+
+  if (to.meta.requiresAdmin && !authStore.isAdmin) {
+    return next({ name: 'dashboard' });
   }
 
   if (to.meta.guestOnly && authStore.isAuthenticated) {

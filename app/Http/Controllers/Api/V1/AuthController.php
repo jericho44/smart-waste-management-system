@@ -99,4 +99,3 @@ class AuthController extends BaseApiController
         return $this->respondSuccess(null, 'Password changed successfully');
     }
 }
-

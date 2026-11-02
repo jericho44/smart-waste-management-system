@@ -49,4 +49,3 @@ class ReportImage extends Model
         return $this->belongsTo(WasteReport::class, 'waste_report_id');
     }
 }
-

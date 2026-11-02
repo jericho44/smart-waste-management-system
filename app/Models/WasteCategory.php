@@ -48,4 +48,3 @@ class WasteCategory extends Model
         return $this->hasMany(WasteReport::class);
     }
 }
-

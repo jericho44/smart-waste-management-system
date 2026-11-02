@@ -86,4 +86,3 @@ class WasteReport extends Model
         return $this->hasMany(ReportStatusHistory::class);
     }
 }
-

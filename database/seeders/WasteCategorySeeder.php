@@ -42,4 +42,3 @@ class WasteCategorySeeder extends Seeder
         }
     }
 }
-
