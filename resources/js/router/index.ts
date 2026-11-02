@@ -139,7 +139,7 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(async (to, _from, next) => {
+router.beforeEach(async (to, _from) => {
   const authStore = useAuthStore();
 
   // If user has token but store not initialized, fetch profile once
@@ -152,21 +152,19 @@ router.beforeEach(async (to, _from, next) => {
   }
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    return next({
+    return {
       name: 'login',
       query: { redirect: to.fullPath },
-    });
+    };
   }
 
   if (to.meta.requiresAdmin && !authStore.isAdmin) {
-    return next({ name: 'dashboard' });
+    return { name: 'dashboard' };
   }
 
   if (to.meta.guestOnly && authStore.isAuthenticated) {
-    return next({ name: 'dashboard' });
+    return { name: 'dashboard' };
   }
-
-  next();
 });
 
 export default router;
