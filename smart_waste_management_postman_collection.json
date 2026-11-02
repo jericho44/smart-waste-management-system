@@ -1,0 +1,932 @@
+{
+  "info": {
+    "_postman_id": "b3e7428f-9a1b-4b20-94a1-872f1025a1e2",
+    "name": "Smart Waste Management System API (v1)",
+    "description": "Koleksi Postman resmi untuk Smart Waste Management System REST API (Laravel 12). Dilengkapi variabel otomatis, skrip penangkapan token, dan contoh muatan request/response.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "admin_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "category_uuid",
+      "value": "da89c193-8079-4726-b83a-d0190a5215aa",
+      "type": "string"
+    },
+    {
+      "key": "report_uuid",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "image_uuid",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "user_uuid",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "0. Health Check",
+      "item": [
+        {
+          "name": "Check System Health",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            },
+            "description": "Memeriksa status hidup aplikasi dan koneksi basis data."
+          }
+        }
+      ]
+    },
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Login as Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('admin_token', jsonData.data.token);",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "    console.log('Admin token saved successfully');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@waste.local\",\n  \"password\": \"Admin@123456\",\n  \"device_name\": \"Postman Desktop Client\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Otentikasi Administrator. Token otomatis disimpan ke variabel collection {{admin_token}}."
+          }
+        },
+        {
+          "name": "Login as Citizen",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "    console.log('Citizen token saved successfully');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@waste.local\",\n  \"password\": \"Password@123\",\n  \"device_name\": \"Postman Citizen\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "login"]
+            },
+            "description": "Otentikasi Warga. Token otomatis disimpan ke variabel collection {{token}}."
+          }
+        },
+        {
+          "name": "Register New Citizen",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.token) {",
+                  "    pm.collectionVariables.set('token', jsonData.data.token);",
+                  "    console.log('Registered citizen token saved');",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Budi Santoso\",\n  \"email\": \"budi.citizen@waste.local\",\n  \"password\": \"Password@123\",\n  \"password_confirmation\": \"Password@123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "register"]
+            },
+            "description": "Pendaftaran akun warga baru."
+          }
+        },
+        {
+          "name": "Get Authenticated User (Me)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/me",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "me"]
+            },
+            "description": "Mendapatkan profil akun yang sedang login beserta role dan permissions."
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Budi Santoso S.Kom\",\n  \"email\": \"budi.updated@waste.local\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "profile"]
+            },
+            "description": "Memperbarui nama dan email pengguna."
+          }
+        },
+        {
+          "name": "Change Password",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"current_password\": \"Password@123\",\n  \"password\": \"NewPassword@456\",\n  \"password_confirmation\": \"NewPassword@456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/change-password",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "change-password"]
+            },
+            "description": "Mengganti kata sandi akun pengguna."
+          }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/logout",
+              "host": ["{{base_url}}"],
+              "path": ["auth", "logout"]
+            },
+            "description": "Mencabut dan menghapus Bearer token sesi aktif."
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Dashboard",
+      "item": [
+        {
+          "name": "Get Admin Dashboard Metrics",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/dashboard/admin",
+              "host": ["{{base_url}}"],
+              "path": ["dashboard", "admin"]
+            },
+            "description": "Ringkasan metrik analitik sistem untuk Administrator."
+          }
+        },
+        {
+          "name": "Get Citizen Dashboard Metrics",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/dashboard/user",
+              "host": ["{{base_url}}"],
+              "path": ["dashboard", "user"]
+            },
+            "description": "Ringkasan metrik dan aktivitas pelaporan sampah milik warga yang login."
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Waste Categories",
+      "item": [
+        {
+          "name": "List All Categories",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.length > 0) {",
+                  "    pm.collectionVariables.set('category_uuid', jsonData.data[0].uuid);",
+                  "    console.log('Saved category_uuid: ' + jsonData.data[0].uuid);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/categories?all=true",
+              "host": ["{{base_url}}"],
+              "path": ["categories"],
+              "query": [
+                { "key": "all", "value": "true", "description": "Matikan paginasi (mengambil seluruh kategori)" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "is_active", "value": "true", "disabled": true },
+                { "key": "page", "value": "1", "disabled": true },
+                { "key": "per_page", "value": "10", "disabled": true }
+              ]
+            },
+            "description": "Daftar kategori sampah publik. Otomatis menyimpan category_uuid pertama."
+          }
+        },
+        {
+          "name": "Create Category (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.uuid) {",
+                  "    pm.collectionVariables.set('category_uuid', jsonData.data.uuid);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Electronic Waste\",\n  \"description\": \"Limbah elektronik, kabel, baterai, dan komponen sirkuit bekas.\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/categories",
+              "host": ["{{base_url}}"],
+              "path": ["categories"]
+            },
+            "description": "Menambahkan kategori sampah baru (Khusus Admin)."
+          }
+        },
+        {
+          "name": "Get Category Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/categories/{{category_uuid}}",
+              "host": ["{{base_url}}"],
+              "path": ["categories", "{{category_uuid}}"]
+            },
+            "description": "Detail kategori sampah berdasarkan UUID."
+          }
+        },
+        {
+          "name": "Update Category (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Electronic Waste & Batteries\",\n  \"description\": \"Deskripsi limbah elektronik telah diperbarui.\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/categories/{{category_uuid}}",
+              "host": ["{{base_url}}"],
+              "path": ["categories", "{{category_uuid}}"]
+            },
+            "description": "Memperbarui kategori sampah (Khusus Admin)."
+          }
+        },
+        {
+          "name": "Toggle Category Status (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/categories/{{category_uuid}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["categories", "{{category_uuid}}", "status"]
+            },
+            "description": "Mengaktifkan atau menonaktifkan kategori sampah."
+          }
+        },
+        {
+          "name": "Delete Category (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/categories/{{category_uuid}}",
+              "host": ["{{base_url}}"],
+              "path": ["categories", "{{category_uuid}}"]
+            },
+            "description": "Menghapus kategori sampah (Ditolak dengan 422 jika masih memiliki laporan aktif)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Waste Reports",
+      "item": [
+        {
+          "name": "List Reports (Paginated)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.length > 0) {",
+                  "    pm.collectionVariables.set('report_uuid', jsonData.data[0].uuid);",
+                  "    console.log('Saved report_uuid: ' + jsonData.data[0].uuid);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reports?page=1&per_page=10&sort=created_at&order=desc",
+              "host": ["{{base_url}}"],
+              "path": ["reports"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "per_page", "value": "10" },
+                { "key": "sort", "value": "created_at" },
+                { "key": "order", "value": "desc" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "status", "value": "PENDING", "disabled": true },
+                { "key": "category_uuid", "value": "{{category_uuid}}", "disabled": true }
+              ]
+            },
+            "description": "Daftar laporan terpaginasi (Admin melihat semua; Warga melihat milik sendiri)."
+          }
+        },
+        {
+          "name": "Create Waste Report (Citizen)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.uuid) {",
+                  "    pm.collectionVariables.set('report_uuid', jsonData.data.uuid);",
+                  "    console.log('Created report_uuid: ' + jsonData.data.uuid);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "title", "value": "Tumpukan Sampah Plastik di Trotoar", "type": "text" },
+                { "key": "description", "value": "Sampah botol plastik dan kantong kresek menumpuk dekat halte busway.", "type": "text" },
+                { "key": "category_uuid", "value": "{{category_uuid}}", "type": "text" },
+                { "key": "latitude", "value": "-6.2088", "type": "text" },
+                { "key": "longitude", "value": "106.8456", "type": "text" },
+                { "key": "address", "value": "Jl. MH Thamrin No. 10, Jakarta Pusat", "type": "text" },
+                { "key": "images[]", "type": "file", "src": [], "description": "Pilih berkas foto (jpeg, png, webp, max 5MB)" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/reports",
+              "host": ["{{base_url}}"],
+              "path": ["reports"]
+            },
+            "description": "Membuat laporan sampah baru beserta geolokasi dan foto lampiran."
+          }
+        },
+        {
+          "name": "Get Report Details",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reports/{{report_uuid}}",
+              "host": ["{{base_url}}"],
+              "path": ["reports", "{{report_uuid}}"]
+            },
+            "description": "Mengambil detail lengkap laporan sampah termasuk foto, pembuat, kategori, dan riwayat status."
+          }
+        },
+        {
+          "name": "Update Report (Citizen while PENDING)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Judul Laporan Yang Diperbarui\",\n  \"description\": \"Keterangan sampah ditambahkan dengan rincian lebih detail.\",\n  \"category_uuid\": \"{{category_uuid}}\",\n  \"latitude\": -6.2090,\n  \"longitude\": 106.8460,\n  \"address\": \"Jl. MH Thamrin No. 12, Jakarta Pusat\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/reports/{{report_uuid}}",
+              "host": ["{{base_url}}"],
+              "path": ["reports", "{{report_uuid}}"]
+            },
+            "description": "Memperbarui isi laporan (Hanya diizinkan jika status masih PENDING)."
+          }
+        },
+        {
+          "name": "Transition Status to IN_PROGRESS (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"IN_PROGRESS\",\n  \"notes\": \"Telah menugaskan tim truk armada #02 ke lokasi untuk penjemputan sampah.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/reports/{{report_uuid}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["reports", "{{report_uuid}}", "status"]
+            },
+            "description": "Transisi status: PENDING -> IN_PROGRESS oleh Admin."
+          }
+        },
+        {
+          "name": "Transition Status to COMPLETED (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"COMPLETED\",\n  \"notes\": \"Sampah telah diangkut bersih dan dipindahkan ke fasilitas daur ulang.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/reports/{{report_uuid}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["reports", "{{report_uuid}}", "status"]
+            },
+            "description": "Transisi status: IN_PROGRESS -> COMPLETED oleh Admin."
+          }
+        },
+        {
+          "name": "Transition Status to REJECTED (Admin)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"REJECTED\",\n  \"notes\": \"Laporan tidak valid atau sampah berada di luar wilayah yurisdiksi dinas kebersihan.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/reports/{{report_uuid}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["reports", "{{report_uuid}}", "status"]
+            },
+            "description": "Transisi status: PENDING -> REJECTED oleh Admin."
+          }
+        },
+        {
+          "name": "Get Report Status History",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reports/{{report_uuid}}/history",
+              "host": ["{{base_url}}"],
+              "path": ["reports", "{{report_uuid}}", "history"]
+            },
+            "description": "Melihat rantai riwayat audit status laporan dari waktu ke waktu."
+          }
+        },
+        {
+          "name": "Upload Additional Images",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "images[]", "type": "file", "src": [], "description": "Foto tambahan (max 5 berkas, 5MB)" }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/reports/{{report_uuid}}/images",
+              "host": ["{{base_url}}"],
+              "path": ["reports", "{{report_uuid}}", "images"]
+            },
+            "description": "Mengunggah foto tambahan ke laporan yang ada."
+          }
+        },
+        {
+          "name": "Delete Report Image",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reports/{{report_uuid}}/images/{{image_uuid}}",
+              "host": ["{{base_url}}"],
+              "path": ["reports", "{{report_uuid}}", "images", "{{image_uuid}}"]
+            },
+            "description": "Menghapus foto dari laporan."
+          }
+        },
+        {
+          "name": "Delete Waste Report",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{token}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/reports/{{report_uuid}}",
+              "host": ["{{base_url}}"],
+              "path": ["reports", "{{report_uuid}}"]
+            },
+            "description": "Menghapus laporan sampah (Hanya diizinkan jika status masih PENDING, atau dilakukan oleh Admin)."
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. User Management (Admin Only)",
+      "item": [
+        {
+          "name": "List Users (Paginated)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.length > 0) {",
+                  "    pm.collectionVariables.set('user_uuid', jsonData.data[0].uuid);",
+                  "    console.log('Saved user_uuid: ' + jsonData.data[0].uuid);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users?page=1&per_page=10&sort=created_at&order=desc",
+              "host": ["{{base_url}}"],
+              "path": ["users"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "per_page", "value": "10" },
+                { "key": "sort", "value": "created_at" },
+                { "key": "order", "value": "desc" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "role", "value": "user", "disabled": true },
+                { "key": "is_active", "value": "true", "disabled": true }
+              ]
+            },
+            "description": "Daftar pengguna terpaginasi (Khusus Admin)."
+          }
+        },
+        {
+          "name": "Create User (Admin)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.uuid) {",
+                  "    pm.collectionVariables.set('user_uuid', jsonData.data.uuid);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Petugas Lapangan Alpha\",\n  \"email\": \"petugas.alpha@waste.local\",\n  \"password\": \"PetugasPass123!\",\n  \"role\": \"admin\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": ["{{base_url}}"],
+              "path": ["users"]
+            },
+            "description": "Menambahkan akun pengguna atau petugas baru."
+          }
+        },
+        {
+          "name": "Get User Details",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+            },
+            "method": "GET",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_uuid}}",
+              "host": ["{{base_url}}"],
+              "path": ["users", "{{user_uuid}}"]
+            },
+            "description": "Detail akun pengguna berdasarkan UUID."
+          }
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Petugas Lapangan Alpha Senior\",\n  \"email\": \"petugas.senior@waste.local\",\n  \"role\": \"admin\",\n  \"is_active\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/{{user_uuid}}",
+              "host": ["{{base_url}}"],
+              "path": ["users", "{{user_uuid}}"]
+            },
+            "description": "Memperbarui akun pengguna."
+          }
+        },
+        {
+          "name": "Toggle User Status (Activate/Deactivate)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+            },
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"is_active\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/users/{{user_uuid}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["users", "{{user_uuid}}", "status"]
+            },
+            "description": "Mengaktifkan atau menonaktifkan pengguna (Admin tidak dapat menonaktifkan diri sendiri)."
+          }
+        },
+        {
+          "name": "Delete User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{admin_token}}", "type": "string" }]
+            },
+            "method": "DELETE",
+            "header": [
+              { "key": "Accept", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users/{{user_uuid}}",
+              "host": ["{{base_url}}"],
+              "path": ["users", "{{user_uuid}}"]
+            },
+            "description": "Menghapus akun pengguna (Admin tidak dapat menghapus diri sendiri)."
+          }
+        }
+      ]
+    }
+  ]
+}

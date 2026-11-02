@@ -10,7 +10,9 @@ Proyek ini dibangun menggunakan arsitektur **Modular Monolith** dengan memisahka
 
 Untuk panduan mendalam mencakup seluruh proses dari awal perancangan, arsitektur, spesifikasi teknis, skema database, pengujian otomatis, hingga panduan operasional (*maintenance*) dan *troubleshooting*, silakan buka:
 
-👉 **[DOCUMENTATION.md (Panduan Resmi Lengkap)](./DOCUMENTATION.md)**
+👉 **[DOCUMENTATION.md (Panduan Resmi Sistem)](./DOCUMENTATION.md)**  
+👉 **[API_DOCUMENTATION.md (Spesifikasi Lengkap REST API)](./API_DOCUMENTATION.md)**  
+👉 **[smart_waste_management_postman_collection.json (Postman Collection)](./smart_waste_management_postman_collection.json)** & **[POSTMAN_GUIDE.md](./POSTMAN_GUIDE.md)**
 
 ---
 
