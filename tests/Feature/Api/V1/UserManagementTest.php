@@ -74,6 +74,19 @@ class UserManagementTest extends TestCase
         $this->assertCount(10, $response->json('data'));
     }
 
+    public function test_admin_can_filter_users_by_string_boolean_is_active(): void
+    {
+        User::factory()->create(['is_active' => false, 'email' => 'inactive.user@waste.local']);
+        User::factory()->create(['is_active' => true, 'email' => 'active.user@waste.local']);
+
+        $response = $this->actingAs($this->admin, 'sanctum')->getJson('/api/v1/users?is_active=false');
+        $response->assertStatus(200);
+
+        $emails = collect($response->json('data'))->pluck('email')->all();
+        $this->assertContains('inactive.user@waste.local', $emails);
+        $this->assertNotContains('active.user@waste.local', $emails);
+    }
+
     public function test_non_admin_cannot_list_users(): void
     {
         $response = $this->actingAs($this->citizen, 'sanctum')->getJson('/api/v1/users');

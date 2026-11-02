@@ -68,6 +68,35 @@ class WasteCategoryTest extends TestCase
         $this->assertNotContains('inactive-category', $slugs);
     }
 
+    public function test_can_filter_categories_by_is_active_string_boolean(): void
+    {
+        WasteCategory::create([
+            'name' => 'Active Test Cat',
+            'slug' => 'active-test-cat',
+            'is_active' => true,
+        ]);
+
+        WasteCategory::create([
+            'name' => 'Inactive Test Cat',
+            'slug' => 'inactive-test-cat',
+            'is_active' => false,
+        ]);
+
+        // Filter is_active=false as admin
+        $response = $this->actingAs($this->admin, 'sanctum')->getJson('/api/v1/categories?page=1&per_page=10&is_active=false');
+        $response->assertStatus(200);
+        $slugs = collect($response->json('data'))->pluck('slug')->all();
+        $this->assertContains('inactive-test-cat', $slugs);
+        $this->assertNotContains('active-test-cat', $slugs);
+
+        // Filter is_active=true
+        $responseTrue = $this->getJson('/api/v1/categories?page=1&per_page=10&is_active=true');
+        $responseTrue->assertStatus(200);
+        $slugsTrue = collect($responseTrue->json('data'))->pluck('slug')->all();
+        $this->assertContains('active-test-cat', $slugsTrue);
+        $this->assertNotContains('inactive-test-cat', $slugsTrue);
+    }
+
     public function test_admin_can_create_waste_category(): void
     {
         $payload = [

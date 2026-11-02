@@ -202,4 +202,3 @@ class DemoWasteReportSeeder extends Seeder
         }
     }
 }
-

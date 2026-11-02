@@ -17,6 +17,19 @@ class ToggleCategoryStatusRequest extends FormRequest
     }
 
     /**
+     * Prepare inputs for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('is_active') && $this->is_active !== null) {
+            $val = filter_var($this->is_active, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            if ($val !== null) {
+                $this->merge(['is_active' => $val]);
+            }
+        }
+    }
+
+    /**
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
