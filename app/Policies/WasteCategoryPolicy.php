@@ -55,4 +55,3 @@ class WasteCategoryPolicy
         return $user->hasPermissionTo('categories:manage') || $user->hasRole('admin');
     }
 }
-

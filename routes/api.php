@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\WasteCategoryController;
+use App\Http\Controllers\Api\V1\WasteReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('v1')->group(function (): void {
@@ -23,7 +24,7 @@ Route::prefix('v1')->group(function (): void {
         });
     });
 
-    // Waste Categories (GET is accessible, modifications require auth)
+    // Waste Categories (public read, auth write)
     Route::get('/categories', [WasteCategoryController::class, 'index']);
     Route::get('/categories/{category}', [WasteCategoryController::class, 'show']);
 
@@ -37,5 +38,16 @@ Route::prefix('v1')->group(function (): void {
         // User management
         Route::apiResource('users', UserController::class);
         Route::patch('/users/{user}/status', [UserController::class, 'toggleStatus']);
+
+        // Waste Reports
+        Route::get('/reports', [WasteReportController::class, 'index']);
+        Route::post('/reports', [WasteReportController::class, 'store']);
+        Route::get('/reports/{report}', [WasteReportController::class, 'show']);
+        Route::put('/reports/{report}', [WasteReportController::class, 'update']);
+        Route::delete('/reports/{report}', [WasteReportController::class, 'destroy']);
+        Route::patch('/reports/{report}/status', [WasteReportController::class, 'transitionStatus']);
+        Route::get('/reports/{report}/history', [WasteReportController::class, 'history']);
+        Route::post('/reports/{report}/images', [WasteReportController::class, 'uploadImages']);
+        Route::delete('/reports/{report}/images/{image}', [WasteReportController::class, 'deleteImage']);
     });
 });

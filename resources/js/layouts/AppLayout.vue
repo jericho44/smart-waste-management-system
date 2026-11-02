@@ -18,7 +18,7 @@
           </div>
 
           <!-- Navigation Links -->
-          <nav class="flex items-center space-x-4 sm:space-x-6 text-sm font-medium">
+          <nav class="flex items-center space-x-3 sm:space-x-5 text-sm font-medium">
             <router-link
               to="/"
               class="text-slate-600 hover:text-emerald-600 transition"
@@ -34,6 +34,15 @@
               active-class="text-emerald-600 font-semibold"
             >
               Dashboard
+            </router-link>
+
+            <router-link
+              v-if="authStore.isAuthenticated"
+              to="/reports"
+              class="text-slate-600 hover:text-emerald-600 transition"
+              active-class="text-emerald-600 font-semibold"
+            >
+              Reports
             </router-link>
 
             <!-- Admin Management Links -->
@@ -53,6 +62,15 @@
               active-class="text-emerald-600 font-semibold"
             >
               Users
+            </router-link>
+
+            <!-- Report Waste Shortcut for Citizens -->
+            <router-link
+              v-if="authStore.isAuthenticated && !authStore.isAdmin"
+              to="/reports/create"
+              class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-700 rounded-xl text-xs font-bold transition"
+            >
+              <span>+ Report Waste</span>
             </router-link>
 
             <!-- Authenticated User Menu -->

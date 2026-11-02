@@ -64,4 +64,3 @@ class UserPolicy
         return $user->hasPermissionTo('users:manage') || $user->hasRole('admin');
     }
 }
-

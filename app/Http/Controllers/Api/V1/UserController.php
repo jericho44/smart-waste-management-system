@@ -95,4 +95,3 @@ class UserController extends BaseApiController
         return $this->respondSuccess(null, 'User deleted successfully');
     }
 }
-

@@ -9,6 +9,10 @@ import RegisterView from '@/modules/auth/views/RegisterView.vue';
 import ProfileView from '@/modules/profile/views/ProfileView.vue';
 import CategoryListView from '@/modules/categories/views/CategoryListView.vue';
 import UserListView from '@/modules/users/views/UserListView.vue';
+import ReportListView from '@/modules/reports/views/ReportListView.vue';
+import CreateReportView from '@/modules/reports/views/CreateReportView.vue';
+import ReportDetailView from '@/modules/reports/views/ReportDetailView.vue';
+import EditReportView from '@/modules/reports/views/EditReportView.vue';
 import NotFoundView from '@/views/NotFoundView.vue';
 
 const routes: RouteRecordRaw[] = [
@@ -28,6 +32,42 @@ const routes: RouteRecordRaw[] = [
         component: DashboardView,
         meta: {
           title: 'Dashboard - Smart Waste Management',
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'reports',
+        name: 'reports',
+        component: ReportListView,
+        meta: {
+          title: 'Reports - Smart Waste Management',
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'reports/create',
+        name: 'reports-create',
+        component: CreateReportView,
+        meta: {
+          title: 'Submit Waste Report - Smart Waste Management',
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'reports/:uuid',
+        name: 'reports-detail',
+        component: ReportDetailView,
+        meta: {
+          title: 'Report Details - Smart Waste Management',
+          requiresAuth: true,
+        },
+      },
+      {
+        path: 'reports/:uuid/edit',
+        name: 'reports-edit',
+        component: EditReportView,
+        meta: {
+          title: 'Edit Waste Report - Smart Waste Management',
           requiresAuth: true,
         },
       },

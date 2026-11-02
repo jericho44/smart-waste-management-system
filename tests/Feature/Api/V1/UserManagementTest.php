@@ -237,4 +237,3 @@ class UserManagementTest extends TestCase
         $this->assertEquals($specialUser->uuid, $response->json('data.0.uuid'));
     }
 }
-

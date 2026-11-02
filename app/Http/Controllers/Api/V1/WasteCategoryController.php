@@ -102,4 +102,3 @@ class WasteCategoryController extends BaseApiController
         return $this->respondSuccess(null, 'Category deleted successfully');
     }
 }
-
