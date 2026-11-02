@@ -77,3 +77,4 @@ Berikut urutan eksekusi yang direkomendasikan untuk menguji seluruh siklus siste
    - Buka `GET /reports/{{report_uuid}}/history` untuk melihat rantai kronologis lengkap transisi status beserta catatan petugas dan tanggal.
 9. **Dashboard Real-Time**:
    - Buka `GET /dashboard/admin` untuk melihat laporan tersebut terhitung dalam statistik penyelesaian.
+
