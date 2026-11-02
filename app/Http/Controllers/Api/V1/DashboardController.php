@@ -41,4 +41,3 @@ class DashboardController extends BaseApiController
         return $this->respondSuccess($data, 'User dashboard data retrieved successfully');
     }
 }
-

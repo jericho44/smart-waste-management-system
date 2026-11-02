@@ -165,4 +165,3 @@ class DashboardService
         return array_values($monthly);
     }
 }
-
