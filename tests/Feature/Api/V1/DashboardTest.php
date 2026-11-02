@@ -196,3 +196,4 @@ class DashboardTest extends TestCase
         }
     }
 }
+

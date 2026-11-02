@@ -47,3 +47,4 @@ export interface UserDashboardData {
   monthly_statistics: MonthlyStatistic[];
   latest_reports: WasteReport[];
 }
+
