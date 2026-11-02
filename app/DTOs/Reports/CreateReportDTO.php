@@ -37,4 +37,3 @@ readonly class CreateReportDTO
         );
     }
 }
-

@@ -34,4 +34,3 @@ class ReportStatusHistoryResource extends JsonResource
         ];
     }
 }
-

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\DashboardController;
 use App\Http\Controllers\Api\V1\HealthController;
 use App\Http\Controllers\Api\V1\UserController;
 use App\Http\Controllers\Api\V1\WasteCategoryController;
@@ -34,6 +35,10 @@ Route::prefix('v1')->group(function (): void {
         Route::put('/categories/{category}', [WasteCategoryController::class, 'update']);
         Route::patch('/categories/{category}/status', [WasteCategoryController::class, 'toggleStatus']);
         Route::delete('/categories/{category}', [WasteCategoryController::class, 'destroy']);
+
+        // Dashboard
+        Route::get('/dashboard/admin', [DashboardController::class, 'admin']);
+        Route::get('/dashboard/user', [DashboardController::class, 'user']);
 
         // User management
         Route::apiResource('users', UserController::class);

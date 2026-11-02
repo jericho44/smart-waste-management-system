@@ -95,4 +95,3 @@ class WasteReportPolicy
         return $report->user_id === $user->id && $report->status === ReportStatus::Pending;
     }
 }
-

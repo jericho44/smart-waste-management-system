@@ -154,4 +154,3 @@ class WasteReportController extends BaseApiController
         return $this->respondSuccess(null, 'Image deleted successfully');
     }
 }
-

@@ -386,4 +386,3 @@ class WasteReportTest extends TestCase
         Storage::disk('public')->assertMissing($imageRecord->image_path);
     }
 }
-

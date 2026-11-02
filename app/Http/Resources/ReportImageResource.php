@@ -29,4 +29,3 @@ class ReportImageResource extends JsonResource
         ];
     }
 }
-
